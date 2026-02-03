@@ -1,13 +1,17 @@
-document.addEventListener('DOMContentLoaded', () => {
-    renderServices();
+import { DataManager } from './data.js';
+import { BookingSystem } from './booking.js';
+
+document.addEventListener('DOMContentLoaded', async () => {
+    await DataManager.init();
+    await renderServices();
     initBookingForm();
-    renderGallery(); // Placeholder function
+    renderGallery();
 });
 
 // Render Services from DataManager
-function renderServices() {
+async function renderServices() {
     const list = document.getElementById('services-list');
-    const services = DataManager.getServices();
+    const services = await DataManager.getServices();
 
     list.innerHTML = services.map(s => `
         <div class="glass-card" style="padding: 2rem; position: relative; overflow: hidden;">
@@ -28,8 +32,9 @@ function renderServices() {
 }
 
 // Booking Form Logic
-function initBookingForm() {
+async function initBookingForm() {
     const app = document.getElementById('app');
+    const services = await DataManager.getServices();
 
     // Inject Booking Section
     const bookingSection = document.createElement('section');
@@ -59,7 +64,7 @@ function initBookingForm() {
                         <label data-i18n="form_service" style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Service</label>
                         <select name="serviceId" id="service-select" required style="width: 100%; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 8px;">
                             <option value="">-- Select --</option>
-                            ${DataManager.getServices().map(s => `<option value="${s.id}" data-duration="${s.duration}">${s.name_en} / ${s.name_th}</option>`).join('')}
+                            ${services.map(s => `<option value="${s.id}" data-duration="${s.duration}">${s.name_en} / ${s.name_th}</option>`).join('')}
                         </select>
                     </div>
 
@@ -96,7 +101,7 @@ function initBookingForm() {
     const timeSelect = document.getElementById('time-select');
 
     // Update slots when date or service changes
-    function updateSlots() {
+    async function updateSlots() {
         const date = dateSelect.value;
         const serviceOption = serviceSelect.options[serviceSelect.selectedIndex];
 
@@ -116,7 +121,7 @@ function initBookingForm() {
         }
 
         const duration = parseInt(serviceOption.getAttribute('data-duration'));
-        const slots = BookingSystem.generateTimeSlots(date, duration);
+        const slots = await BookingSystem.generateTimeSlots(date, duration);
 
         if (slots.length === 0) {
             timeSelect.innerHTML = '<option value="">No slots available (Full)</option>';
@@ -130,7 +135,7 @@ function initBookingForm() {
     serviceSelect.addEventListener('change', updateSlots);
     dateSelect.addEventListener('change', updateSlots);
 
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const formData = new FormData(form);
         const serviceOption = serviceSelect.options[serviceSelect.selectedIndex];
@@ -138,7 +143,7 @@ function initBookingForm() {
         // Final check for Monday on submission
         if (BookingSystem.isMonday(formData.get('date'))) {
             alert(TRANSLATIONS[currentLang].msg_closed_monday);
-            return; // Prevent form submission
+            return;
         }
 
         const booking = {
@@ -153,10 +158,10 @@ function initBookingForm() {
             created: new Date().toISOString()
         };
 
-        if (BookingSystem.submitBooking(booking)) {
+        if (await BookingSystem.submitBooking(booking)) {
             alert(TRANSLATIONS[currentLang].msg_success);
             form.reset();
-            updateSlots(); // Reset slots
+            updateSlots();
         }
     });
 }

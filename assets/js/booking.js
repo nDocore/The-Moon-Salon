@@ -1,3 +1,5 @@
+import { DataManager } from './data.js';
+
 const BookingSystem = {
     selectedService: null,
     selectedDate: null,
@@ -13,20 +15,20 @@ const BookingSystem = {
         return d.getDay() === 1; // 0=Sun, 1=Mon
     },
 
-    getExistingBookingsForDate: (dateString) => {
-        const allBookings = DataManager.getBookings();
+    getExistingBookingsForDate: async (dateString) => {
+        const allBookings = await DataManager.getBookings();
         return allBookings.filter(b => b.date === dateString && b.status !== 'cancelled');
     },
 
     // Time Slot Logic
-    generateTimeSlots: (dateString, serviceDuration) => {
+    generateTimeSlots: async (dateString, serviceDuration) => {
         if (!dateString || !serviceDuration) return [];
         if (BookingSystem.isMonday(dateString)) return []; // Closed Mondays
 
         const slots = [];
         const startHour = 9;
         const endHour = 18;
-        const existingBookings = BookingSystem.getExistingBookingsForDate(dateString);
+        const existingBookings = await BookingSystem.getExistingBookingsForDate(dateString);
 
         // Generate all possible start times (30 min intervals)
         for (let h = startHour; h < endHour; h++) {
@@ -53,8 +55,6 @@ const BookingSystem = {
                     const bEnd = bStart + bDuration;
 
                     // Overlap Condition: (StartA < EndB) and (EndA > StartB)
-                    // The new booking cannot start inside an existing one
-                    // And an existing booking cannot start inside the new one
                     if (potentialStart < bEnd && potentialEnd > bStart) {
                         isOverlap = true;
                         break;
@@ -70,7 +70,7 @@ const BookingSystem = {
         return slots;
     },
 
-    submitBooking: (formData) => {
+    submitBooking: async (formData) => {
         // 1. Strict Date Check (Monday)
         if (BookingSystem.isMonday(formData.date)) {
             alert(TRANSLATIONS[currentLang].msg_closed_monday);
@@ -78,18 +78,16 @@ const BookingSystem = {
         }
 
         // 2. Strict Overlap Check
-        // Generate valid slots for this specific service duration
-        const validSlots = BookingSystem.generateTimeSlots(formData.date, formData.duration);
+        const validSlots = await BookingSystem.generateTimeSlots(formData.date, formData.duration);
 
-        // If the selected time is NOT in the valid list, it means it's either:
-        // - Taken by another booking
-        // - Too late in the day will exceed 18:00
         if (!validSlots.includes(formData.time)) {
             alert(TRANSLATIONS[currentLang].msg_double_book);
             return false;
         }
 
-        DataManager.addBooking(formData);
+        await DataManager.addBooking(formData);
         return true;
     }
 };
+
+export { BookingSystem };

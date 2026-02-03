@@ -1,4 +1,6 @@
-function checkLogin() {
+import { DataManager } from './data.js';
+
+window.checkLogin = function () {
     const pin = document.getElementById('pin-input').value;
     if (pin === 'admin888') {
         document.getElementById('login-overlay').style.display = 'none';
@@ -7,19 +9,38 @@ function checkLogin() {
     } else {
         document.getElementById('login-error').style.display = 'block';
     }
-}
+};
+
+window.changeDate = function (days) {
+    const d = new Date(currentAdminDate);
+    d.setDate(d.getDate() + days);
+    currentAdminDate = d.toISOString().split('T')[0];
+    renderTimeline();
+};
+
+window.setDate = function (dateString) {
+    currentAdminDate = dateString;
+    renderTimeline();
+};
+
+window.updateStatus = async function (id, status) {
+    if (confirm(`Change status to ${status}?`)) {
+        await DataManager.updateBookingStatus(id, status);
+        loadBookings();
+    }
+};
 
 // Global state for admin dashboard
 let currentAdminDate = new Date().toISOString().split('T')[0];
 
-function loadBookings() {
-    renderBookingList();
-    renderTimeline();
+async function loadBookings() {
+    await renderBookingList();
+    await renderTimeline();
 }
 
-function renderBookingList() {
+async function renderBookingList() {
     const list = document.getElementById('booking-list');
-    const bookings = DataManager.getBookings();
+    const bookings = await DataManager.getBookings();
 
     // Sort by Date + Time
     bookings.sort((a, b) => {
@@ -57,15 +78,16 @@ function renderBookingList() {
     `).join('');
 
     if (bookings.length === 0) {
-        list.innerHTML = '<tr><td colspan="5" style="text-align:center; py: 2rem;">No bookings found.</td></tr>';
+        list.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 2rem;">No bookings found.</td></tr>';
     }
 }
 
-function renderTimeline() {
+async function renderTimeline() {
     const container = document.getElementById('timeline-view');
-    if (!container) return; // Guard clause if element doesn't exist yet
+    if (!container) return;
 
-    const bookings = DataManager.getBookings().filter(b => b.date === currentAdminDate && b.status !== 'cancelled');
+    const allBookings = await DataManager.getBookings();
+    const bookings = allBookings.filter(b => b.date === currentAdminDate && b.status !== 'cancelled');
     const startHour = 9;
     const endHour = 18;
     const totalHours = endHour - startHour;
@@ -112,21 +134,5 @@ function renderTimeline() {
     container.innerHTML = timelineHTML;
 }
 
-function changeDate(days) {
-    const d = new Date(currentAdminDate);
-    d.setDate(d.getDate() + days);
-    currentAdminDate = d.toISOString().split('T')[0];
-    renderTimeline();
-}
-
-function setDate(dateString) {
-    currentAdminDate = dateString;
-    renderTimeline();
-}
-
-function updateStatus(id, status) {
-    if (confirm(`Change status to ${status}?`)) {
-        DataManager.updateBookingStatus(id, status);
-        loadBookings();
-    }
-}
+// Initial initialization if needed
+DataManager.init();

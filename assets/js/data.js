@@ -1,3 +1,5 @@
+import { db, ref, get, set, push, update, child } from './firebase.js';
+
 const SAMPLE_SERVICES = [
     { id: 's1', name_en: 'Haircut (Men & Women)', name_th: 'ตัดผม (ชาย & หญิง)', price: 500, duration: 60 },
     { id: 's2', name_en: 'Wash & Styling', name_th: 'สระไดร์', price: 350, duration: 45 },
@@ -10,50 +12,52 @@ const SAMPLE_SERVICES = [
     { id: 's9', name_en: 'Natural Hair Straightening', name_th: 'ยืดผมธรรมชาติ', price: 3000, duration: 180 }
 ];
 
-const DB_KEYS = {
-    SERVICES: 'moon_services',
-    BOOKINGS: 'moon_bookings'
+const DB_PATHS = {
+    SERVICES: 'moon/services',
+    BOOKINGS: 'moon/bookings'
 };
 
 const DataManager = {
-    init: () => {
-        if (!localStorage.getItem(DB_KEYS.SERVICES)) {
-            localStorage.setItem(DB_KEYS.SERVICES, JSON.stringify(SAMPLE_SERVICES));
+    init: async () => {
+        const servicesRef = ref(db, DB_PATHS.SERVICES);
+        const snapshot = await get(servicesRef);
+        if (!snapshot.exists()) {
+            await set(servicesRef, SAMPLE_SERVICES);
         }
-        if (!localStorage.getItem(DB_KEYS.BOOKINGS)) {
-            localStorage.setItem(DB_KEYS.BOOKINGS, JSON.stringify([]));
+    },
+
+    getServices: async () => {
+        const snapshot = await get(ref(db, DB_PATHS.SERVICES));
+        return snapshot.exists() ? snapshot.val() : [];
+    },
+
+    getBookings: async () => {
+        const snapshot = await get(ref(db, DB_PATHS.BOOKINGS));
+        if (snapshot.exists()) {
+            const data = snapshot.val();
+            // Convert object to array if Firebase returns it as object
+            return Object.keys(data).map(key => ({
+                id: key,
+                ...data[key]
+            }));
         }
+        return [];
     },
 
-    getServices: () => {
-        return JSON.parse(localStorage.getItem(DB_KEYS.SERVICES) || '[]');
-    },
-
-    getBookings: () => {
-        return JSON.parse(localStorage.getItem(DB_KEYS.BOOKINGS) || '[]');
-    },
-
-    addBooking: (booking) => {
-        const bookings = DataManager.getBookings();
-        // Simple ID generation
-        booking.id = Date.now().toString(36) + Math.random().toString(36).substr(2);
+    addBooking: async (booking) => {
+        const bookingsRef = ref(db, DB_PATHS.BOOKINGS);
+        const newBookingRef = push(bookingsRef);
         booking.status = 'pending';
-        bookings.push(booking);
-        localStorage.setItem(DB_KEYS.BOOKINGS, JSON.stringify(bookings));
+        booking.id = newBookingRef.key;
+        await set(newBookingRef, booking);
         return booking;
     },
 
-    updateBookingStatus: (id, status) => {
-        const bookings = DataManager.getBookings();
-        const index = bookings.findIndex(b => b.id === id);
-        if (index !== -1) {
-            bookings[index].status = status;
-            localStorage.setItem(DB_KEYS.BOOKINGS, JSON.stringify(bookings));
-            return true;
-        }
-        return false;
+    updateBookingStatus: async (id, status) => {
+        const bookingRef = ref(db, `${DB_PATHS.BOOKINGS}/${id}`);
+        await update(bookingRef, { status: status });
+        return true;
     }
 };
 
-// Initialize on load
-DataManager.init();
+export { DataManager, SAMPLE_SERVICES };
