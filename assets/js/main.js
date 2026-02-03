@@ -1,5 +1,6 @@
 import { DataManager } from './data.js';
 import { BookingSystem } from './booking.js';
+import { TRANSLATIONS, currentLang } from './i18n.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     await DataManager.init();

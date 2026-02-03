@@ -67,7 +67,7 @@ const TRANSLATIONS = {
 
 let currentLang = 'th'; // Default to TH
 
-function setLanguage(lang) {
+window.setLanguage = function (lang) {
     if (!TRANSLATIONS[lang]) return;
     currentLang = lang;
 
@@ -94,9 +94,11 @@ function setLanguage(lang) {
 
     // Dispatch event for other components to react if needed
     window.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang } }));
-}
+};
 
 // Initial set
 document.addEventListener('DOMContentLoaded', () => {
-    setLanguage('th');
+    window.setLanguage('th');
 });
+
+export { TRANSLATIONS, currentLang };

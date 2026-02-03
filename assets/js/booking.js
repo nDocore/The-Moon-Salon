@@ -1,4 +1,5 @@
 import { DataManager } from './data.js';
+import { TRANSLATIONS, currentLang } from './i18n.js';
 
 const BookingSystem = {
     selectedService: null,
