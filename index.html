@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The Moon Salon - Professional Hair Salon using Korean techniques. Men & Women.">
+
+    <title>The Moon Salon</title>
+
+    <!-- Fonts: Outfit (Headings) & Inter (Body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Outfit:wght@200;300;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+
+    <!-- Language Toggle -->
+    <div class="lang-switch">
+        <button class="lang-btn active" onclick="setLanguage('th')">TH</button>
+        <span style="color:var(--text-secondary)">|</span>
+        <button class="lang-btn" onclick="setLanguage('en')">EN</button>
+    </div>
+
+    <!-- Main Content Container -->
+    <!-- Main Content Container -->
+    <div id="app">
+
+        <!-- Hero Section -->
+        <header class="section hero" id="home"
+            style="min-height: 90vh; display: flex; align-items: center; justify-content: center; position: relative;">
+            <div class="container" style="text-align: center; z-index: 2;">
+                <!-- Floating Particles Effect in CSS (implied by bg) -->
+                <h1 class="hero-glow-text fade-in" style="font-size: 4rem; margin-bottom: 0.5rem; letter-spacing: 2px;">
+                    The Moon Salon</h1>
+                <div class="section-divider fade-in delay-1"></div>
+                <p class="text-gradient fade-in delay-2"
+                    style="font-size: 1.5rem; margin-bottom: 3rem; font-weight: 300;" data-i18n="tagline">Healthy,
+                    Shiny, Stylish Hair — Designed for You</p>
+
+                <div class="fade-in delay-3" style="display: flex; gap: 1rem; justify-content: center;">
+                    <button class="btn-primary" onclick="scrollToBooking()" data-i18n="book_btn">Book
+                        Appointment</button>
+                    <button class="btn-secondary"
+                        onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">View
+                        Services</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Services Preview Strip -->
+        <section style="background: var(--bg-surface); border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <div class="container">
+                <div class="service-preview-strip">
+                    <div class="preview-card">
+                        <span class="icon-large">✂️</span>
+                        <span>Haircut</span>
+                    </div>
+                    <div class="preview-card">
+                        <span class="icon-large">🎨</span>
+                        <span>Coloring</span>
+                    </div>
+                    <div class="preview-card">
+                        <span class="icon-large">✨</span>
+                        <span>Keratin</span>
+                    </div>
+                    <div class="preview-card">
+                        <span class="icon-large">👩‍🦱</span>
+                        <span>Korean Perm</span>
+                    </div>
+                    <div class="preview-card">
+                        <span class="icon-large">💆‍♀️</span>
+                        <span>Hair Spa</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section class="section" id="about">
+            <div class="container">
+                <h2 data-i18n="nav_about" style="text-align: center; margin-bottom: 2rem;">About Us</h2>
+                <div
+                    style="max-width: 800px; margin: 0 auto; text-align: center; color: var(--text-secondary); font-size: 1.1rem; line-height: 1.8;">
+                    <p data-i18n="about_desc">The Moon Salon is...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Luxury Banner -->
+        <div class="luxury-banner">
+            <div style="text-align: center;">
+                <h2 class="hero-glow-text" style="font-size: 3rem; margin-bottom: 1rem;">Professional Care</h2>
+                <p style="font-size: 1.25rem; font-weight: 300;">Experience the best hair treatment in town</p>
+            </div>
+        </div>
+
+        <!-- Services -->
+        <section class="section" id="services">
+            <div class="container">
+                <h2 style="text-align: center; margin-bottom: 3rem;" data-i18n="nav_services">Services</h2>
+                <div id="services-list"
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                    <!-- Services injected via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Stylist Section -->
+        <section class="section">
+            <div class="container" style="text-align: center;">
+                <h2 style="margin-bottom: 3rem;">Stylists</h2>
+                <div class="glass-card" style="display: inline-block; padding: 3rem; max-width: 500px;">
+                    <div class="stylist-frame">
+                        <div class="stylist-glow"></div>
+                        <div class="stylist-img"
+                            style="background: url('assets/images/stylist-tae.jpg') center/cover no-repeat;"></div>
+                    </div>
+                    <h3 style="margin-bottom: 0.5rem; font-size: 1.5rem;">ช่างต่าย (Tae)</h3>
+                    <div class="section-divider" style="margin: 1rem auto; width: 40px; height: 2px;"></div>
+                    <p style="color: var(--text-secondary);">Experienced professional stylist specializing in modern
+                        cuts, color, and Korean-style perms.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact & Location -->
+        <section class="section" id="contact">
+            <div class="container">
+                <h2 data-i18n="nav_contact" style="text-align: center; margin-bottom: 3rem;">Contact</h2>
+                <div class="contact-split">
+                    <div style="padding: 3rem; background: var(--bg-surface);">
+                        <h3 data-i18n="contact_title" style="margin-bottom: 1.5rem;">Contact Us</h3>
+                        <p style="margin-bottom: 1rem; color: var(--text-secondary);">
+                            <strong style="color:white; display:block; margin-bottom:4px;">Phone</strong>
+                            081-792-5295 (ช่างต่าย)<br>
+                            095-702-5329
+                        </p>
+                        <p style="margin-bottom: 2rem; color: var(--text-secondary);">
+                            <strong style="color:white; display:block; margin-bottom:4px;">Opening Hours</strong>
+                            09:00 – 18:00 (Closed Monday)
+                        </p>
+                        <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                            <a href="https://maps.app.goo.gl/DuR4nCxNSmQHN7zSA" target="_blank" class="btn-primary"
+                                data-i18n="get_directions">Get Directions</a>
+                            <a href="https://www.facebook.com/profile.php?id=100050372994193" target="_blank"
+                                class="btn-secondary" style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span style="font-size: 1.2rem;">f</span> <span data-i18n="facebook_page">Visit Facebook
+                                    Page</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div style="min-height: 350px; background: #222;">
+                        <!-- Embed Google Map -->
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15495.496739462828!2d100.551139!3d13.847119!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTPCsDUwJzQ5LjYiTiAxMDDCsDMzJzA0LjEiRQ!5e0!3m2!1sen!2sth!4v1630000000000!5m2!1sen!2sth"
+                            width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/data.js"></script>
+    <script src="assets/js/i18n.js"></script>
+    <script src="assets/js/booking.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - The Moon Salon</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Outfit:wght@200;300;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+
+</head>
+
+<body>
+
+    <div id="login-overlay">
+        <div class="login-box">
+            <h2 style="margin-bottom: 0.5rem;">Admin Login</h2>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">The Moon Salon</p>
+            <input type="password" id="pin-input" placeholder="Enter Password">
+            <button class="btn-primary" onclick="checkLogin()" style="width: 100%;">Login</button>
+            <p id="login-error" style="color: var(--danger); font-size: 0.9rem; margin-top: 1rem; display: none;">
+                Incorrect Password</p>
+        </div>
+    </div>
+
+    <div class="admin-container" id="admin-panel" style="display: none;">
+        <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <div>
+                <h1 class="text-gradient">Dashboard</h1>
+                <p style="color: var(--text-secondary);">Manage your bookings</p>
+            </div>
+            <a href="index.html" class="btn-secondary">Back to Site</a>
+        </header>
+
+        <!-- Timeline View Container -->
+        <div id="timeline-view"></div>
+
+        <div class="booking-table-container">
+            <table class="booking-table">
+                <thead>
+                    <tr>
+                        <th>Date/Time</th>
+                        <th>Customer</th>
+                        <th>Service</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="booking-list">
+                    <!-- JS Injected -->
+                </tbody>
+            </table>
+        </div>
+        <div style="text-align: center; margin-top: 2rem; color: var(--text-secondary); font-size: 0.8rem;">
+            The Moon Salon Admin System
+        </div>
+    </div>
+
+    <script src="assets/js/data.js"></script>
+    <script src="assets/js/admin.js"></script>
+</body>
+
+</html>
