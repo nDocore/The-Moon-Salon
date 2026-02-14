@@ -86,7 +86,26 @@ const BookingSystem = {
             return false;
         }
 
-        await DataManager.addBooking(formData);
+        const result = await DataManager.addBooking(formData);
+        if (result && result.id) {
+            // Trigger LINE Notification (Google Apps Script)
+            // Fire and forget - don't wait for response to avoid blocking UI
+            fetch("https://script.google.com/macros/s/AKfycbwuGPCHNSnCzjvCP0pNd8BYrP4aUo7Q3tqSY5P_6Lw_zBs17MP5y1YgK6x051CTsUES/exec", {
+                method: "POST",
+                mode: "no-cors", // Important for Google Apps Script
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name: formData.customerName,
+                    phone: formData.phone,
+                    service: formData.serviceName,
+                    date: formData.date,
+                    time: formData.time
+                })
+            }).catch(e => console.error("Notification Error:", e));
+        }
+
         return true;
     }
 };
